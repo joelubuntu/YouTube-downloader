@@ -1,6 +1,7 @@
 import os
 import datetime
 from pytube import YouTube
+
 def video_download(link,res):
         yt = YouTube(link)
         title = yt.title
@@ -12,9 +13,9 @@ def video_download(link,res):
                 elif res.lower() == ('medium'):
                         reso_select = yt.streams.get_by_itag(18)
                 reso_select.download()
-                print("Downloaded " , title)
+                print("Downloaded " , title,"\n")
         except:
-                print("Enter vaild input!")
+                print("Enter vaild input!",'\n')
 
 def audio_download(link):
         yt = YouTube(link)
@@ -23,13 +24,13 @@ def audio_download(link):
                 try:
                         stream = yt.streams.get_by_itag(140)
                         stream.download()
-                        print("Downloaded " , title)
+                        print("Downloaded " , title ,'\n')
                 except:
                         stream = yt.streams.get_by_itag(139)
                         stream.download()
-                        print("Downloaded " , title)
+                        print("Downloaded " , title ,'\n' )
         except:
-                print("Failed!")
+                print("Failed!", '\n')
 
 def welcome():
     user_name = os.getlogin()
@@ -40,30 +41,29 @@ def welcome():
         print('Good afternoon,')
     elif time <= 23 and time >= 17:
         print('Good evening,')
-    print( user_name)
+    print(str(user_name))
 
 exit = False
 
-welcome()
+def help():
+        help_file = open('help.txt','r')
+        print(help_file.read())
 
-while exit == False:
-    link = input('Paste your YouTube link here: ')
-    if link.lower() == ('exit') or link.lower() == ('quit'):
-        exit = True
-        pass
-    yt = YouTube(link)
-    title = yt.title
-    format = input("type v to download video and a to download audio: ")
-    if format.lower() == ('exit') or format.lower() == ('quit'):
-        exit = True
-        pass
-    if format.lower() == ('v'):
-            res = input('Enter your resolution (low,high) #by default
-its medium: ')
-            print('Downloading ' ,title)
-            video_download(link,res)
-    if format.lower() == ('a'):
-            print('Downloading ' , title)
-            audio_download(link)
-    else:
-            print("Enter vaild input!")
+def menu():
+        exit = False
+        while exit == False:
+                user_cmd = input('Enter your command: ').split(' ')
+                if user_cmd[0].lower() == ("video"):
+                        res = input('Enter resolution: ')
+                        video_download(user_cmd[1],res)
+                elif user_cmd[0].lower() == ("audio"):
+                        audio_download(user_cmd[1])
+                elif user_cmd[0].lower() == ('help'):
+                        help()
+                elif user_cmd[0].lower() == ('exit') or user_cmd[0].lower() == ('quit'):
+                        exit = True
+                else:
+                        print("Invaild input! ")
+
+welcome()
+menu()
