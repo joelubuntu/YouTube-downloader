@@ -1,7 +1,6 @@
 import os
 import datetime
 from pytube import YouTube
-
 def video_download(link,res):
         yt = YouTube(link)
         title = yt.title
@@ -46,8 +45,10 @@ def welcome():
 exit = False
 
 def help():
-        help_file = open('help.txt','r')
-        print(help_file.read())
+        print("\n")
+	print('For downloading video:',"\n",'use this command : video (link)',"\n",'example: video https://www.youtube.com/watch?v=dQw4w9WgXcQ',"\n",'resolution : low = 144p , medium = 360p , high = 720p',"\n")
+	print('For downloading whole playlist:',"\n",'use this command : playlist (link of playlist) (no. of video playlist have)',"\n")
+	print('For downloading audio:',"\n",'use this command : audio (link)',"\n",'ex: audio https://www.youtube.com/watch?v=dQw4w9WgXcQ',"\n")
 
 def menu():
         exit = False
