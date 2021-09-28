@@ -1,5 +1,6 @@
 import os
 import datetime
+import sys
 from pytube import YouTube
 from pytube import Playlist
 def video_download(link,res):
@@ -15,22 +16,22 @@ def video_download(link,res):
 		reso_select.download()
 		print("Downloaded " , title,"\n")
 	except:
-		print("Enter vaild input!",'\n')
+		print("Failed, try diffrent resolution.")
 
-def audio_download(link):
+def audio_download(link,quality):
 	yt = YouTube(link)
 	title = yt.title
 	try:
-		try:
-			stream = yt.streams.get_by_itag(140)
-			stream.download()
-			print("Downloaded " , title ,'\n')
-		except:
-			stream = yt.streams.get_by_itag(139)
-			stream.download()
-			print("Downloaded " , title ,'\n' )
+		if quality.lower() == ("high"):
+			quality_select = yt.streams.get_by_itag(251)
+		elif quality.lower() == ("low"):
+			quality_select = yt.streams.get_by_itag(249)
+		elif quality.lower() == ('medium'):
+			quality_select = yt.streams.get_by_itag(50)
+		quality_select.download()
+		print("Download " , title , "\n")
 	except:
-		print("Failed!", '\n')
+		print("Failed , Try different quality audio")
 
 def welcome():
     user_name = os.getlogin()
@@ -43,44 +44,36 @@ def welcome():
         print('Good evening,')
     print(str(user_name))
 
-exit = False
-
 def help():
-	print('For downloading video:',"\n",'use this command : video (link)',"\n",'example: video https://www.youtube.com/watch?v=dQw4w9WgXcQ',"\n",'resolution : low = 144p , medium = 360p , high = 720p',"\n")
-	print('For downloading whole playlist:',"\n",'use this command : playlist (link of playlist) (no. of video playlist have)',"\n")
-	print('For downloading audio:',"\n",'use this command : audio (link)',"\n",'ex: audio https://www.youtube.com/watch?v=dQw4w9WgXcQ',"\n")
+	print("Usage: python3 " + sys.argv[0] + " <video/audio> [URL ..] <resolution/quality>")
+	print('Example to download video - \n python3 ' , sys.argv[0] , ' video https://www.youtube.com/watch?v=dQw4w9WgXcQ high')
+	print('Example to download audio - \n python3 ' , sys.argv[0] , ' audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high')
+	print('Example to download playlist - \n python3 ' , sys.argv[0] , ' playlist https://www.youtube.com/watch?v=dQw4w9WgXcQ high')
 
-def playlist(link):
-	res = input('Enter resolution: ')
-	if res.lower() == ("high"):
-		itag = 22
-	elif res.lower() == ("low"):
-		itag = 17
-	elif res.lower() == ('medium'):
-		itag = 18
-
-	play = Playlist(link)
-	for video in play.videos:
-		video.streams.get_by_itag(itag).download()
-	print('Downloaded! ')
+def playlist(link,res):
+	try:
+		if res.lower() == ("high"):
+			itag = 22
+		elif res.lower() == ("low"):
+			itag = 17
+		elif res.lower() == ('medium'):
+			itag = 18
+		play = Playlist(link)
+		for video in play.videos:
+			video.streams.get_by_itag(itag).download()
+		print('Downloaded! ')
+	except:
+		print("Failed, try diffrent resolution.")
 
 def menu():
-	exit = False
-	while exit == False:
-		user_cmd = input('Enter your command: ').split(' ')
-		if user_cmd[0].lower() == ("video"):
-			res = input('Enter resolution: ')
-			video_download(user_cmd[1],res)
-		elif user_cmd[0].lower() == ("audio"):
-			audio_download(user_cmd[1])
-		elif user_cmd[0].lower() == ('help'):
-			help()
-		elif user_cmd[0].lower() == ('exit') or user_cmd[0].lower() == ('quit'):
-			exit = True
-		elif user_cmd[0].lower() == ("playlist"):
-			playlist(user_cmd[1])
-		else:
-			print("Invaild input! ")
+	if len(sys.argv) > 4 or len(sys.argv) < 4:
+		help()
+	if sys.argv[1] == 'video':
+		video_download(sys.argv[2],sys.argv[3])
+	elif sys.argv[1] == 'audio':
+		audio_download(sys.argv[2],sys.argv[3])
+	elif sys.argv[1] == "playlist":
+		playlist(sys.argv[2],sys.argv[3])
 
 welcome()
 menu()
