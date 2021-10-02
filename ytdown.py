@@ -36,7 +36,7 @@ def audio_download(link, quality):
             quality_select = streams.get_by_itag(50)
         print("Initiating audio download")
         quality_select.download()
-        print("Download ", title, "\n")
+        print("Downloaded ", title, "\n")
     except:
         print("Failed , Try different quality audio")
 
