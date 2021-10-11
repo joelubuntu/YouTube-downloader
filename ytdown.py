@@ -41,13 +41,16 @@ def audio_download(link , quality):
 	title = yt.title
 	try:
 		if quality.lower() == ("high"):
-			quality_select = yt.streams.get_by_itag(251)
+			quality_select = yt.streams.get_by_itag(140)
 		elif quality.lower() == ("low"):
-			quality_select = yt.streams.get_by_itag(249)
+			quality_select = yt.streams.get_by_itag(139)
 		elif quality.lower() == ('medium'):
-			quality_select = yt.streams.get_by_itag(50)
+			quality_select = yt.streams.get_by_itag(139)
 		print("Initiating audio download")
-		quality_select.download()
+		out_file = quality_select.download()
+		base, ext = os.path.splitext(out_file)
+		new_file = base + '.mp3'
+		os.rename(out_file, new_file)
 		print("Downloaded ", title, "\n")
 	except:
 		print("Failed , Try different quality audio")
@@ -87,19 +90,22 @@ def playlist_video(link , res):
 def playlist_audio(link , quality):
 	try:
 		if res.lower() == ("high"):
-			itag = 251
+			itag = 140
 		elif res.lower() == ("low"):
-			itag = 249
+			itag = 139
 		elif res.lower() == ('medium'):
-			itag = 50
+			itag = 139
 		play = Playlist(link)
 		print("Initiating audio download")
 		for video in play.videos:
-			video.streams.get_by_itag(itag).download()
+			out_file = video.streams.get_by_itag(itag).download()
+			base, ext = os.path.splitext(out_file)
+			new_file = base + '.mp3'
+			os.rename(out_file, new_file)
 		print('Downloaded! ')
 	except:
 		print("Failed, try diffrent quality.")
 	
 
-welcome()
+#welcome()
 menu()
