@@ -13,6 +13,8 @@ def menu():
 			playlist_video(sys.argv[2], sys.argv[3])
 		elif sys.argv[1].lower() == "playlist_audio":
 			playlist_audio(sys.argv[2], sys.argv[3])
+		elif sys.argv[1].lower() == "itag":
+			get_by_itag(sys.argv[2], sys.argv[3])
 	else:
 		print('Invalid option!')
 		help()
@@ -23,7 +25,8 @@ def help():
 	print('Example to download video - \n python3 ' + file_name + 'ytdown.py video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
 	print('Example to download audio - \n python3 ' + file_name + 'audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
 	print('Example to download playlist - \n python3 ' + file_name + 'playlist_video https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n python3 ' + file_name + ' playlist_audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high')
-
+	print("Example to download using itag - \n python3 " + file_name + 'itag N https://www.youtube.com/watch?v=dQw4w9WgXcQ \n where N is this Itag number , itag list file is already uploaded check that for your reference' )
+	
 def welcome():
     user_name = os.getlogin()
     time = datetime.datetime.now().hour
@@ -105,7 +108,17 @@ def playlist_audio(link , quality):
 		print('Downloaded! ')
 	except:
 		print("Failed, try diffrent quality.")
-	
 
+def get_by_itag(itag , link):
+	yt = YouTube(link)
+	title = yt.title
+	try:
+		print("Intiiating Download")
+		yt.streams.get_by_itag(int(itag)).download()
+	except:
+		print('Failed , try with another itag !')
+		
 welcome()
 menu()
+
+#last updated on 12th OCT 2021
