@@ -107,5 +107,5 @@ def playlist_audio(link , quality):
 		print("Failed, try diffrent quality.")
 	
 
-#welcome()
+welcome()
 menu()
