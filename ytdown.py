@@ -7,11 +7,11 @@ def menu():
 	if len(sys.argv) == 4:
 		if sys.argv[1].lower() == 'video':
 			video_download(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == 'audio':
+		elif sys.argv[1].lower() == 'audio' or sys.argv[1].lower() == 'music':
 			audio_download(sys.argv[2], sys.argv[3])
 		elif sys.argv[1].lower() == "playlist_video":
 			playlist_video(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "playlist_audio":
+		elif sys.argv[1].lower() == "playlist_audio" or sys.argv[1].lower() == "playlist_music":
 			playlist_audio(sys.argv[2], sys.argv[3])
 		elif sys.argv[1].lower() == "itag":
 			get_by_itag(sys.argv[2], sys.argv[3])
@@ -21,21 +21,21 @@ def menu():
 
 def help():
 	file_name = sys.argv[0]
-	print("\n Usage: python3 " + file_name + "< video / audio / playlist_video / playlist_audio > [URL ..] <quality> \n")
-	print('Example to download video - \n python3 ' + file_name + 'ytdown.py video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
-	print('Example to download audio - \n python3 ' + file_name + 'audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
-	print('Example to download playlist - \n python3 ' + file_name + 'playlist_video https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n python3 ' + file_name + ' playlist_audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high')
-	print("Example to download using itag - \n python3 " + file_name + 'itag N https://www.youtube.com/watch?v=dQw4w9WgXcQ \n where N is this Itag number , itag list file is already uploaded check that for your reference' )
+	print("\n Usage: python3 " + file_name + " < video / audio / playlist_video / playlist_audio > [URL ..] <quality> \n")
+	print('Example to download video - \n python3 ' + file_name + ' ytdown.py video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
+	print('Example to download audio - \n python3 ' + file_name + ' audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
+	print('Example to download playlist - \n python3 ' + file_name + ' playlist_video https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n python3 ' + file_name + ' playlist_audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n')
+	print("Example to download using itag - \n python3 " + file_name + ' itag N https://www.youtube.com/watch?v=dQw4w9WgXcQ \n where N is this Itag number , itag list file is already uploaded check that for your reference' )
 	
 def welcome():
     user_name = os.getlogin()
     time = datetime.datetime.now().hour
     if time <= 12 and time >= 5:
-        print('Good morning,', end=" ")
+        print('\nGood morning,', end=" ")
     elif time <= 17 and time >= 12:
-        print('Good afternoon,', end=" ")
+        print('\nGood afternoon,', end=" ")
     elif time <= 23 and time >= 17:
-        print('Good evening,', end=" ")
+        print('\nGood evening,', end=" ")
     print(str(user_name))
     
     
@@ -120,5 +120,3 @@ def get_by_itag(itag , link):
 		
 welcome()
 menu()
-
-#last updated on 12th OCT 2021
