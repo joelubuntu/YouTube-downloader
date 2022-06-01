@@ -115,6 +115,7 @@ def get_by_itag(itag , link):
 	try:
 		print("Intiiating Download")
 		yt.streams.get_by_itag(int(itag)).download()
+		print("Downloaded ", title, "\n")
 	except:
 		print('Failed , try with another itag !')
 		
