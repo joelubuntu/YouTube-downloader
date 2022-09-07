@@ -1,6 +1,13 @@
-from pytube import YouTube , Playlist
-import datetime
 import os
+import platform
+try:
+	from pytube import YouTube , Playlist
+except:
+	if platform.system() == 'Windows':
+		os.system("pip intall pytube")
+	if platform.system() == 'Linux':
+		os.system("pip3 intall pytube")
+import datetime
 import sys
 
 def menu():
@@ -90,7 +97,7 @@ def playlist_video(link , res):
 	except:
 		print("Failed, try diffrent resolution.")
 
-def playlist_audio(link , quality):
+def playlist_audio(link , res):
 	try:
 		if res.lower() == ("high"):
 			itag = 140
