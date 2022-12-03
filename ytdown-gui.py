@@ -10,20 +10,13 @@ from tkinter import *
 
 def video_download(link,quality):
 	video_root = Tk()
-	if quality == "144p":
+	if quality == "Low":
 		itag = 17
-	elif quality == "240p":
-		itag = 133
-	elif quality == "360p":
+	elif quality == "Medium":
 		itag = 18
-	elif quality == "480p":
-		itag = 135
-	elif quality == "720p":
+	elif quality == "High":
 		itag = 22
-	elif quality == '1080p':
-		itag = 137
-	elif quality == "1440p":
-		itag = 400
+
 	try:
 		yt = YouTube(link)
 		title = yt.title
@@ -60,9 +53,9 @@ def audio_download(link,quality):
 	audio_root.mainloop()
 
 root = Tk()
-root.iconbitmap("C:/Users/avguser1.DESKTOP-N4DIB48/Downloads/youtube.ico")
+path = (os.getcwd()+'\youtube.ico')
+root.iconbitmap(path)
 root.title("Youtube Downloader.")
-
 
 time = datetime.datetime.now().hour
 if time <= 12 and time >= 5:
@@ -84,10 +77,10 @@ video_label = Label(home_screen,text='Download video by pasting link here: ',pad
 audio_label = Label(home_screen,text='Download audio by pasting link here: ',padx=10).grid(row=2,column=0)
 
 video_default = StringVar()
-video_default.set("480p")
+video_default.set("Medium")
 audio_default = StringVar()
 audio_default.set("Medium")
-video_drop = OptionMenu(home_screen , video_default , "144p",'240p','360p',"480p",'720p',"1080","1440p").grid(row=1,column=2)
+video_drop = OptionMenu(home_screen,video_default , "Low",'Medium','High').grid(row=1,column=2)
 audio_drop = OptionMenu(home_screen,audio_default,"Low","Medium","High").grid(row=2,column=2)
 
 video_download_button = Button(home_screen,text="Download",padx=30,command=lambda: video_download(video_entry.get(),video_default.get())).grid(row=1,column=3)
@@ -99,5 +92,3 @@ exit_button = Button(home_screen,text="Exit",command=root.destroy,padx=20,pady=2
 
 
 root.mainloop()
-
-#30-11-2022
