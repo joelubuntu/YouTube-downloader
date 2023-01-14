@@ -4,7 +4,7 @@ try:
 	from pytube import YouTube , Playlist
 except:
 	if platform.system() == 'Windows':
-		os.system("pip intall pytube")
+		os.system("pip install pytube")
 	if platform.system() == 'Linux':
 		os.system("pip3 intall pytube")
 import datetime
