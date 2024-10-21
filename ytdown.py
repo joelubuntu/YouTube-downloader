@@ -1,130 +1,102 @@
 import os
-import platform
-try:
-	from pytube import YouTube , Playlist
-except:
-	if platform.system() == 'Windows':
-		os.system("pip install pytube")
-	if platform.system() == 'Linux':
-		os.system("pip3 intall pytube")
+from pytube import YouTube, Playlist
 import datetime
-import sys
 
-def menu():
-	if len(sys.argv) == 4:
-		if sys.argv[1].lower() == 'video':
-			video_download(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == 'audio' or sys.argv[1].lower() == 'music':
-			audio_download(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "playlist_video":
-			playlist_video(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "playlist_audio" or sys.argv[1].lower() == "playlist_music":
-			playlist_audio(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "itag":
-			get_by_itag(sys.argv[2], sys.argv[3])
-	else:
-		print('Invalid option!')
-		help()
+def video_download(link, res):
+    try:
+        yt = YouTube(link)
+        title = yt.title
+        
+        # Find the best matching video stream based on resolution
+        if res.lower() == "high":
+            stream = yt.streams.filter(progressive=True, res="720p").first()  # 720p (high)
+        elif res.lower() == "medium":
+            stream = yt.streams.filter(progressive=True, res="480p").first()  # 480p (medium)
+        elif res.lower() == "low":
+            stream = yt.streams.filter(progressive=True, res="144p").first()  # 144p (low)
+        else:
+            print("Invalid resolution. Please use 'high', 'medium', or 'low'.")
+            return
 
-def help():
-	file_name = sys.argv[0]
-	print("\n Usage: python3 " + file_name + " < video / audio / playlist_video / playlist_audio > [URL ..] <quality> \n")
-	print('Example to download video - \n python3 ' + file_name + ' ytdown.py video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
-	print('Example to download audio - \n python3 ' + file_name + ' audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
-	print('Example to download playlist - \n python3 ' + file_name + ' playlist_video https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n python3 ' + file_name + ' playlist_audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n')
-	print("Example to download using itag - \n python3 " + file_name + ' itag N https://www.youtube.com/watch?v=dQw4w9WgXcQ \n where N is this Itag number , itag list file is already uploaded check that for your reference' )
-	
+        if stream:
+            print(f"Downloading {title} in {res} quality...")
+            stream.download()
+            print(f"Downloaded {title} successfully!\n")
+        else:
+            print(f"No available stream for {res} resolution.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+def audio_download(link, quality):
+    try:
+        yt = YouTube(link)
+        title = yt.title
+        
+        # Find the best matching audio stream based on bitrate
+        if quality.lower() == "high":
+            stream = yt.streams.filter(only_audio=True, abr="160kbps").first()  # 160kbps (high quality)
+        elif quality.lower() == "medium":
+            stream = yt.streams.filter(only_audio=True, abr="128kbps").first()  # 128kbps (medium quality)
+        elif quality.lower() == "low":
+            stream = yt.streams.filter(only_audio=True, abr="48kbps").first()  # 48kbps (low quality)
+        else:
+            print("Invalid quality. Please use 'high', 'medium', or 'low'.")
+            return
+
+        if stream:
+            print(f"Downloading {title} audio in {quality} quality...")
+            out_file = stream.download()
+            base, ext = os.path.splitext(out_file)
+            new_file = base + '.mp3'
+            os.rename(out_file, new_file)
+            print(f"Downloaded {title} audio successfully!\n")
+        else:
+            print(f"No available stream for {quality} quality.")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
+def playlist_download(link, res):
+    try:
+        playlist = Playlist(link)
+        print(f"Downloading playlist with {len(playlist.video_urls)} videos...")
+
+        # Download each video in the playlist
+        for video in playlist.videos:
+            video_download(video.watch_url, res)
+
+        print("Playlist downloaded successfully!\n")
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+
 def welcome():
     user_name = os.getlogin()
     time = datetime.datetime.now().hour
-    if time <= 12 and time >= 5:
-        print('\nGood morning,', end=" ")
-    elif time <= 17 and time >= 12:
-        print('\nGood afternoon,', end=" ")
-    elif time <= 23 and time >= 17:
-        print('\nGood evening,', end=" ")
-    print(str(user_name))
-    
-    
-def audio_download(link , quality):    
-	yt = YouTube(link)
-	title = yt.title
-	try:
-		if quality.lower() == ("high"):
-			quality_select = yt.streams.get_by_itag(140)
-		elif quality.lower() == ("low"):
-			quality_select = yt.streams.get_by_itag(139)
-		elif quality.lower() == ('medium'):
-			quality_select = yt.streams.get_by_itag(139)
-		print("Initiating audio download")
-		out_file = quality_select.download()
-		base, ext = os.path.splitext(out_file)
-		new_file = base + '.mp3'
-		os.rename(out_file, new_file)
-		print("Downloaded ", title, "\n")
-	except:
-		print("Failed , Try different quality audio")
-		
-def video_download(link, res):
-	yt = YouTube(link)
-	title = yt.title
-	try:
-		if res.lower() == ("high"):
-			reso_select = yt.streams.get_by_itag(22)
-		elif res.lower() == ("low"):
-			reso_select = yt.streams.get_by_itag(17)
-		elif res.lower() == ('medium'):
-			reso_select = yt.streams.get_by_itag(18)
-		print("Initiating video download")
-		reso_select.download()
-		print("Downloaded ", title, "\n")
-	except:
-		print("Failed, try diffrent resolution.")
+    greeting = "Good morning" if 5 <= time < 12 else "Good afternoon" if 12 <= time < 17 else "Good evening"
+    print(f"\n{greeting}, {user_name}!")
 
-def playlist_video(link , res):
-	try:
-		if res.lower() == ("high"):
-			itag = 22
-		elif res.lower() == ("low"):
-			itag = 17
-		elif res.lower() == ('medium'):
-			itag = 18
-		play = Playlist(link)
-		print("Initiating audio download")
-		for video in play.videos:
-			video.streams.get_by_itag(itag).download()
-		print('Downloaded! ')
-	except:
-		print("Failed, try diffrent resolution.")
+def menu():
+    print("\nWhat would you like to download?")
+    print("1. Video")
+    print("2. Audio")
+    print("3. Playlist")
 
-def playlist_audio(link , res):
-	try:
-		if res.lower() == ("high"):
-			itag = 140
-		elif res.lower() == ("low"):
-			itag = 139
-		elif res.lower() == ('medium'):
-			itag = 139
-		play = Playlist(link)
-		print("Initiating audio download")
-		for video in play.videos:
-			out_file = video.streams.get_by_itag(itag).download()
-			base, ext = os.path.splitext(out_file)
-			new_file = base + '.mp3'
-			os.rename(out_file, new_file)
-		print('Downloaded! ')
-	except:
-		print("Failed, try diffrent quality.")
+    choice = input("Enter your choice (1/2/3): ")
 
-def get_by_itag(itag , link):
-	yt = YouTube(link)
-	title = yt.title
-	try:
-		print("Intiiating Download")
-		yt.streams.get_by_itag(int(itag)).download()
-		print("Downloaded ", title, "\n")
-	except:
-		print('Failed , try with another itag !')
-		
+    if choice == "1":
+        link = input("Enter the YouTube video URL: ")
+        res = input("Choose quality (high/medium/low): ")
+        video_download(link, res)
+    elif choice == "2":
+        link = input("Enter the YouTube audio URL: ")
+        quality = input("Choose audio quality (high/medium/low): ")
+        audio_download(link, quality)
+    elif choice == "3":
+        link = input("Enter the YouTube playlist URL: ")
+        res = input("Choose quality (high/medium/low): ")
+        playlist_download(link, res)
+    else:
+        print("Invalid choice. Please restart the program.")
+        return
+
 welcome()
 menu()
