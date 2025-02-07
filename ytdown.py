@@ -1,12 +1,11 @@
-import os
-import platform
+import os , platform
 try:
-	from pytube import YouTube , Playlist
+	from pytubefix import YouTube , Playlist
 except:
 	if platform.system() == 'Windows':
-		os.system("pip install pytube")
+		os.system("pip install pytubefix")
 	if platform.system() == 'Linux':
-		os.system("pip3 intall pytube")
+		os.system("pip3 intall pytubefix")
 import datetime
 import sys
 
