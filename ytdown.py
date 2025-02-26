@@ -1,4 +1,4 @@
-import os , platform
+import os,platform,datetime,sys
 try:
 	from pytubefix import YouTube , Playlist
 except:
@@ -6,21 +6,42 @@ except:
 		os.system("pip install pytubefix")
 	if platform.system() == 'Linux':
 		os.system("pip3 intall pytubefix")
-import datetime
-import sys
 
-def menu():
+def menu_0():
 	if len(sys.argv) == 4:
-		if sys.argv[1].lower() == 'video':
+		if sys.argv[1].lower() == 'video' or sys.argv[1].lower() == '1':
 			video_download(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == 'audio' or sys.argv[1].lower() == 'music':
+		elif sys.argv[1].lower() == 'audio' or sys.argv[1].lower() == '2':
 			audio_download(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "playlist_video":
+		elif sys.argv[1].lower() == "playlist_video" or sys.argv[1].lower() == '3':
 			playlist_video(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "playlist_audio" or sys.argv[1].lower() == "playlist_music":
+		elif sys.argv[1].lower() == "playlist_audio" or sys.argv[1].lower() == "4":
 			playlist_audio(sys.argv[2], sys.argv[3])
-		elif sys.argv[1].lower() == "itag":
+		elif sys.argv[1].lower() == "itag" or sys.argv[1].lower() == '5':
 			get_by_itag(sys.argv[2], sys.argv[3])
+	else:
+		print('Invalid option!')
+		help()
+		
+def menu():
+	print('1) Video \n2) Audio \n3) Playlist_vido \n4) Playlist_audio only \n5) itag')
+	user_input = str(input("File Type: "))
+	link = input('Link: ')
+	print('1) High \n2) Medium \n3) Low')
+	if user_input == "itag" or user_input == '5':
+		quality = input('itag: ')
+	else:
+		quality = input('Quality: ')
+	if user_input == 'Video' or user_input == '1':
+		video_download(link, quality)
+	elif user_input == 'Audio' or user_input == '2':
+		audio_download(link, quality)
+	elif user_input == "Playlist_video" or user_input == '3':
+		playlist_video(link, quality)
+	elif user_input == "Playlist_audio" or user_input == "4":
+		playlist_audio(link, quality)
+	elif user_input == "itag" or user_input == '5':
+		get_by_itag(link, quality)
 	else:
 		print('Invalid option!')
 		help()
@@ -49,11 +70,11 @@ def audio_download(link , quality):
 	yt = YouTube(link)
 	title = yt.title
 	try:
-		if quality.lower() == ("high"):
+		if quality.lower() == ("high") or quality == '1':
 			quality_select = yt.streams.get_by_itag(140)
-		elif quality.lower() == ("low"):
+		elif quality.lower() == ("low") or quality == '3':
 			quality_select = yt.streams.get_by_itag(139)
-		elif quality.lower() == ('medium'):
+		elif quality.lower() == ('medium') or quality == '2':
 			quality_select = yt.streams.get_by_itag(139)
 		print("Initiating audio download")
 		out_file = quality_select.download()
@@ -68,11 +89,11 @@ def video_download(link, res):
 	yt = YouTube(link)
 	title = yt.title
 	try:
-		if res.lower() == ("high"):
+		if res.lower() == ("high") or res == ("1"):
 			reso_select = yt.streams.get_by_itag(22)
-		elif res.lower() == ("low"):
+		elif res.lower() == ("low") or res == ("3"):
 			reso_select = yt.streams.get_by_itag(17)
-		elif res.lower() == ('medium'):
+		elif res.lower() == ('medium') or res == ("2"):
 			reso_select = yt.streams.get_by_itag(18)
 		print("Initiating video download")
 		reso_select.download()
@@ -82,11 +103,11 @@ def video_download(link, res):
 
 def playlist_video(link , res):
 	try:
-		if res.lower() == ("high"):
+		if res.lower() == ("high") or res == '1':
 			itag = 22
-		elif res.lower() == ("low"):
+		elif res.lower() == ("low") or res == '3':
 			itag = 17
-		elif res.lower() == ('medium'):
+		elif res.lower() == ('medium') or res == '2':
 			itag = 18
 		play = Playlist(link)
 		print("Initiating audio download")
@@ -98,11 +119,11 @@ def playlist_video(link , res):
 
 def playlist_audio(link , res):
 	try:
-		if res.lower() == ("high"):
+		if res.lower() == ("high") or res == '1':
 			itag = 140
-		elif res.lower() == ("low"):
+		elif res.lower() == ("low") or res == '3':
 			itag = 139
-		elif res.lower() == ('medium'):
+		elif res.lower() == ('medium') or res == '2':
 			itag = 139
 		play = Playlist(link)
 		print("Initiating audio download")
