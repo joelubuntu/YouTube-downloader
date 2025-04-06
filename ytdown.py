@@ -1,11 +1,5 @@
-import os,platform,datetime,sys
-try:
-	from pytubefix import YouTube , Playlist
-except:
-	if platform.system() == 'Windows':
-		os.system("pip install pytubefix")
-	if platform.system() == 'Linux':
-		os.system("pip3 intall pytubefix")
+import os,datetime,sys,ffmpeg
+from pytubefix import YouTube , Playlist
 
 def menu_0():
 	if len(sys.argv) == 4:
@@ -27,10 +21,10 @@ def menu():
 	print('1) Video \n2) Audio \n3) Playlist_vido \n4) Playlist_audio only \n5) itag')
 	user_input = str(input("File Type: "))
 	link = input('Link: ')
-	print('1) High \n2) Medium \n3) Low')
 	if user_input == "itag" or user_input == '5':
 		quality = input('itag: ')
 	else:
+		print('1) High \n2) Medium \n3) Low')
 		quality = input('Quality: ')
 	if user_input == 'Video' or user_input == '1':
 		video_download(link, quality)
@@ -49,38 +43,25 @@ def menu():
 def help():
 	file_name = sys.argv[0]
 	print("\n Usage: python3 " + file_name + " < video / audio / playlist_video / playlist_audio > [URL ..] <quality> \n")
-	print('Example to download video - \n python3 ' + file_name + ' ytdown.py video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
+	print('Example to download video - \n python3 ' + file_name + ' video https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
 	print('Example to download audio - \n python3 ' + file_name + ' audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high\n')
 	print('Example to download playlist - \n python3 ' + file_name + ' playlist_video https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n python3 ' + file_name + ' playlist_audio https://www.youtube.com/watch?v=dQw4w9WgXcQ high \n')
 	print("Example to download using itag - \n python3 " + file_name + ' itag N https://www.youtube.com/watch?v=dQw4w9WgXcQ \n where N is this Itag number , itag list file is already uploaded check that for your reference' )
-	
-def welcome():
-    user_name = os.getlogin()
-    time = datetime.datetime.now().hour
-    if time <= 12 and time >= 5:
-        print('\nGood morning,', end=" ")
-    elif time <= 17 and time >= 12:
-        print('\nGood afternoon,', end=" ")
-    elif time <= 23 and time >= 17:
-        print('\nGood evening,', end=" ")
-    print(str(user_name))
-    
     
 def audio_download(link , quality):    
 	yt = YouTube(link)
 	title = yt.title
 	try:
 		if quality.lower() == ("high") or quality == '1':
-			quality_select = yt.streams.get_by_itag(140)
+			quality_select = yt.streams.get_by_itag(251)
 		elif quality.lower() == ("low") or quality == '3':
 			quality_select = yt.streams.get_by_itag(139)
 		elif quality.lower() == ('medium') or quality == '2':
-			quality_select = yt.streams.get_by_itag(139)
+			quality_select = yt.streams.get_by_itag(140)
 		print("Initiating audio download")
 		out_file = quality_select.download()
 		base, ext = os.path.splitext(out_file)
-		new_file = base + '.mp3'
-		os.rename(out_file, new_file)
+		ffmpeg.input(out_file).output(base + '.m4a', acodec='aac').run()
 		print("Downloaded ", title, "\n")
 	except:
 		print("Failed , Try different quality audio")
@@ -138,13 +119,14 @@ def playlist_audio(link , res):
 
 def get_by_itag(itag , link):
 	yt = YouTube(link)
-	title = yt.title
 	try:
 		print("Intiiating Download")
 		yt.streams.get_by_itag(int(itag)).download()
-		print("Downloaded ", title, "\n")
+		print("Downloaded ", yt.title, "\n")
 	except:
 		print('Failed , try with another itag !')
 		
-welcome()
-menu()
+if len(sys.argv) == 1:
+	menu()
+else:
+	menu_0()
